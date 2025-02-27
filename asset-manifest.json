@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/cramvas/static/css/main.981db4bf.css",
+    "main.js": "/cramvas/static/js/main.2d62a354.js",
+    "static/js/453.8edaead3.chunk.js": "/cramvas/static/js/453.8edaead3.chunk.js",
+    "static/media/logo.png": "/cramvas/static/media/logo.9484a2dec74778a72cc5.png",
+    "index.html": "/cramvas/index.html",
+    "main.981db4bf.css.map": "/cramvas/static/css/main.981db4bf.css.map",
+    "main.2d62a354.js.map": "/cramvas/static/js/main.2d62a354.js.map",
+    "453.8edaead3.chunk.js.map": "/cramvas/static/js/453.8edaead3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.981db4bf.css",
+    "static/js/main.2d62a354.js"
+  ]
+}
