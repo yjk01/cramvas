@@ -263,6 +263,75 @@ flashcard-navigation button:hover {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
 }
 
+/* Saved sets panel styles */
+.saved-sets-panel {
+  background: #181c2b;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 0 auto 20px auto;
+  max-width: 600px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  text-align: left;
+}
+
+.saved-sets-panel h3 {
+  margin-top: 0;
+  color: #bfc6e0;
+}
+
+.saved-sets-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.saved-set-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.saved-set-name {
+  flex: 1;
+  margin-left: 10px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1em;
+  word-break: break-all;
+}
+
+.save-set-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-set-content {
+  background: #23284a;
+  padding: 24px 32px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.save-set-content input[type="text"] {
+  width: 80%;
+  font-size: 1em;
+  margin-bottom: 12px;
+  background: #1b2033;
+  color: #fff;
+  border: 1px solid #3d435b;
+  padding: 8px;
+  border-radius: 4px;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
@@ -304,4 +373,150 @@ body {
   width: 100px; /* Adjust the size of the logo */
   height: auto;
   margin-bottom: 5px;
+}
+
+/* Improved answer selection styles */
+.select-answers-step.improved {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.select-progress-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.select-progress-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #23284a;
+  color: #bfc6e0;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s, color 0.2s;
+  margin-bottom: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.select-progress-dot.active {
+  background: #4e5574;
+  color: #fff;
+  border: 2px solid #bfc6e0;
+}
+
+.select-progress-dot.answered {
+  background: #2ecc71;
+  color: #fff;
+}
+
+.select-answer-card.improved {
+  background: #23284a;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  padding: 32px 36px 24px 36px;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-bottom: 24px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.select-answer-card.improved .select-question {
+  font-size: 1.2em;
+  margin-bottom: 18px;
+  color: #fff;
+}
+
+.select-choices.improved {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+
+.select-choice-item {
+  display: flex;
+  align-items: center;
+  background: #1b2033;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background 0.2s, border 0.2s;
+  font-size: 1.1em;
+  outline: none;
+}
+
+.select-choice-item.selected,
+.select-choice-item:focus {
+  background: #2ecc71;
+  color: #fff;
+  border: 2px solid #2ecc71;
+}
+
+.select-choice-item input[type="radio"] {
+  margin-right: 12px;
+  accent-color: #2ecc71;
+  pointer-events: none;
+}
+
+.select-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.select-nav-buttons button {
+  min-width: 100px;
+  background: #3d435b;
+  color: #fff;
+  border-radius: 20px;
+  border: none;
+  padding: 8px 18px;
+  font-size: 1em;
+  cursor: pointer;
+  margin: 0 6px;
+  transition: background 0.2s;
+}
+
+.select-nav-buttons button:disabled {
+  background: #23284a;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.select-confirm-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.confirm-btn {
+  background: #2ecc71;
+  color: #fff;
+  border-radius: 20px;
+  border: none;
+  padding: 10px 28px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.confirm-btn:disabled {
+  background: #555;
+  color: #ccc;
+  cursor: not-allowed;
 }

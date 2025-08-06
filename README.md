@@ -1,70 +1,120 @@
-# Getting Started with Create React App
+# Cramvas - Canvas Quiz Flashcards
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Cramvas** was created to help me study for a college class. I was too lazy to go through previous quizzes and did not feel engaged just reading through questions. Hence, this beauty was created where I can dumb a bunch of quiz information in seconds and engage in flashcards to memorize 500+ questions. As a result of this application, I was able to crush my midterm in 04 minutes and 05 seconds with a perfect score of 50/50. _**GGEZ**_
 
-## Available Scripts
+## 🌟 Features
 
-In the project directory, you can run:
+### Core Functionality
 
-### `npm start`
+- **Canvas Quiz Parser**: Automatically parses Canvas quiz text and converts it into flashcards
+- **Interactive Flashcards**: Demur flip animations to reveal answers
+- **Answer Selection**: Step-by-step interface to select correct answers for each question
+- **Multiple Choice Support**: Handles Canvas multiple choice questions with A, B, C, D, E options
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### User Experience
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Keyboard Navigation**:
+  - `Space` - Flip current card
+  - `←` / `→` - Navigate between cards
+- **Visual Progress Tracking**: See your current position in the flashcard set
+- **Responsive Design**: Works on desktop and mobile devices
+- **Dark Theme**: Easy-on-the-eyes dark interface
 
-### `npm test`
+### Study Management
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Save & Load Sets**: Store multiple flashcard sets with custom names
+- **Local Storage**: All data saved locally in your browser
+- **Set Management**: Load, delete, and organize your saved flashcard sets
+- **Progress Indicators**: Visual feedback during answer selection process
 
-### `npm run build`
+## 🚀 Demo
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+At least take a look: [https://yjk01.github.io/cramvas/](https://yjk01.github.io/cramvas/)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📖 How to Use
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Copy Canvas Quiz Content**: Copy the text from your Canvas quiz (questions and multiple choice options)
+2. **Paste & Parse**: Paste the content into the text area and click "Parse Quiz"
+3. **Select Correct Answers**: For each question, select the correct answer from the multiple choice options
+4. **Study with Flashcards**: Use the interactive flashcards to study
+   - Click cards or press `Space` to flip
+   - Use arrow keys or buttons to navigate
+5. **Save Your Sets**: Save your flashcard sets with custom names for later use
 
-### `npm run eject`
+## 🛠️ Installation & Development
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Node.js (v14 or higher)
+- npm or yarn
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Local Development
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. **Clone the repository**
 
-## Learn More
+   ```bash
+   git clone https://github.com/yjk01/cramvas.git
+   cd cramvas
+   ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2. **Install dependencies**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   ```bash
+   npm install
+   ```
 
-### Code Splitting
+3. **Start development server**
+   ```bash
+   npm start
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Available Scripts
 
-### Analyzing the Bundle Size
+- **`npm start`** - Runs the app in development mode
+- **`npm test`** - Launches the test runner in interactive watch mode
+- **`npm run build`** - Builds the app for production to the `build` folder
+- **`npm run deploy`** - Deploys the app to GitHub Pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🏗️ Project Structure
 
-### Making a Progressive Web App
+```
+canvas-flashcards/
+├── public/
+│   ├── index.html
+│   ├── favicon.ico
+│   └── manifest.json
+├── src/
+│   ├── App.js          # Main application component
+│   ├── App.css         # Styling and animations
+│   ├── index.js        # React DOM entry point
+│   └── logo.png        # Application logo
+├── package.json        # Dependencies and scripts
+└── README.md          # This file
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🎨 Key Components
 
-### Advanced Configuration
+### Flashcard Component
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Handles the flip animation and display logic
+- Shows questions on the front, answers on the back
+- Responsive design with choice formatting
 
-### Deployment
+### Quiz Parser
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Parses Canvas LMS quiz text format
+- Extracts questions and multiple choice options
+- Handles various Canvas text formats
 
-### `npm run build` fails to minify
+### Answer Selection Interface
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Step-by-step answer selection process
+- Progress tracking with visual indicators
+- Validation to ensure all questions have selected answers
+
+### Storage Management
+
+- Local browser storage for flashcard sets
+- Save/load functionality with custom naming
+- Set management (create, load, delete)

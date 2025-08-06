@@ -41,14 +41,13 @@ function Flashcard({ card, index, flipped, setFlipped }) {
   );
 }
 
-// A simple parser to convert the pasted text into flashcard objects.
+// Updated parser: does not expect correct answer markers
 function parseQuiz(text) {
   // Split the input by the word "Question " (assuming each question starts with it)
   const blocks = text.split(/Question\s+\d+/).filter((blk) => blk.trim() !== "");
   const cards = [];
 
   blocks.forEach((block) => {
-    // Split block into lines and trim them.
     const lines = block.split("\n").map((line) => line.trim()).filter((line) => line !== "");
     let card = {
       question: "",
@@ -57,29 +56,15 @@ function parseQuiz(text) {
       userAnswer: ""
     };
 
-    // A very simple heuristic:
-    // Assume the first non-empty line is the score (which we skip) and the second line is the question.
-    // Then we look for markers: "Correct!", "You Answered", "Correct Answer", "Correct Answers".
+    // Assume first line is score, second is question
     if (lines.length >= 2) {
-      // We assume the first line is a score line; second is the question.
       card.question = lines[1];
     }
 
-    // Find indices for markers if they exist.
-    const idxCorrectExcl = lines.findIndex((l) => l.startsWith("Correct!"));
-    const idxYouAnswered = lines.findIndex((l) => l === "You Answered");
-
-    // Extract choices before any markers
+    // Choices: lines after the question (skip score and question)
     for (let i = 2; i < lines.length; i++) {
-      if (lines[i].startsWith("Correct!")) {
-        card.correctAnswer = lines[i + 1];
-      } else if (lines[i].startsWith("You Answered")) {
-        card.userAnswer = lines[i + 1];
-      } else if (lines[i].startsWith("Correct Answer")) {
-        card.correctAnswer = lines[i + 1];
-      } else if (lines[i].startsWith("Correct Answers")) {
-        card.correctAnswer = lines[i + 1];
-      } else {
+      // Only add lines that look like choices (e.g., start with a quote or letter or are indented)
+      if (lines[i]) {
         card.choices.push(lines[i]);
       }
     }
@@ -98,16 +83,91 @@ function App() {
   const [showHint, setShowHint] = useState(false);
   const [keyboardHintShown, setKeyboardHintShown] = useState(false);
 
+  // New: state for correct answer selection step
+  const [selectingAnswers, setSelectingAnswers] = useState(false);
+  const [answerSelections, setAnswerSelections] = useState([]);
+  // New for improved answer selection UI
+  const [answerSelectIndex, setAnswerSelectIndex] = useState(0);
+
+  // New: for managing sets
+  const [savedSets, setSavedSets] = useState({});
+  const [saveSetName, setSaveSetName] = useState("");
+  const [showSavePanel, setShowSavePanel] = useState(false);
+
+  // Load all saved sets on mount
+  useEffect(() => {
+    const sets = localStorage.getItem("canvasFlashcardSets");
+    if (sets) {
+      try {
+        setSavedSets(JSON.parse(sets));
+      } catch (e) {
+        setSavedSets({});
+      }
+    }
+  }, []);
+
+  // Helper to update localStorage and state
+  const updateSavedSets = (newSets) => {
+    setSavedSets(newSets);
+    localStorage.setItem("canvasFlashcardSets", JSON.stringify(newSets));
+  };
+
   const handleParse = () => {
     const parsedCards = parseQuiz(inputText);
     setCards(parsedCards);
+    setAnswerSelections(Array(parsedCards.length).fill(null));
+    setSelectingAnswers(true);
+    setAnswerSelectIndex(0);
     setCurrentCardIndex(0);
     setFlipped(false);
-    // Show keyboard hint when cards are first loaded
+    setKeyboardHintShown(false);
+  };
+
+  // After all answers are selected, set correctAnswer for each card and proceed
+  const handleConfirmAnswers = () => {
+    const updatedCards = cards.map((card, idx) => ({
+      ...card,
+      correctAnswer: card.choices[answerSelections[idx]]
+    }));
+    setCards(updatedCards);
+    setSelectingAnswers(false);
+    setCurrentCardIndex(0);
+    setFlipped(false);
     setKeyboardHintShown(true);
-    setTimeout(() => {
-      setKeyboardHintShown(false);
-    }, 5000);
+    setTimeout(() => setKeyboardHintShown(false), 5000);
+    // No auto-save here
+  };
+
+  // Save current cards as a named set
+  const handleSaveSet = () => {
+    if (!saveSetName.trim() || cards.length === 0) return;
+    const newSets = { ...savedSets, [saveSetName.trim()]: cards };
+    updateSavedSets(newSets);
+    setShowSavePanel(false);
+    setSaveSetName("");
+  };
+
+  // Load a set by name
+  const handleLoadSet = (name) => {
+    setCards(savedSets[name]);
+    setSelectingAnswers(false);
+    setCurrentCardIndex(0);
+    setFlipped(false);
+    setKeyboardHintShown(true);
+    setTimeout(() => setKeyboardHintShown(false), 5000);
+  };
+
+  // Delete a set by name
+  const handleDeleteSet = (name) => {
+    const newSets = { ...savedSets };
+    delete newSets[name];
+    updateSavedSets(newSets);
+    // If currently loaded set is deleted, clear cards
+    if (cards === savedSets[name]) {
+      setCards([]);
+      setCurrentCardIndex(0);
+      setFlipped(false);
+    }
   };
 
   const handleNext = () => {
@@ -161,6 +221,38 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" /> {/* Add logo image */}
         <h1>Canvas Quiz Flashcards</h1>
       </header>
+      {/* Saved Sets Panel */}
+      <div className="saved-sets-panel">
+        <h3>Saved Flashcard Sets</h3>
+        {Object.keys(savedSets).length === 0 && <div style={{color:'#aaa'}}>No saved sets.</div>}
+        <ul className="saved-sets-list">
+          {Object.keys(savedSets).map((name) => (
+            <li key={name} className="saved-set-item">
+              <button onClick={() => handleLoadSet(name)}>Load</button>
+              <span className="saved-set-name">{name}</span>
+              <button onClick={() => handleDeleteSet(name)} style={{marginLeft:8, background:'#a33'}}>Delete</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {/* Save Set Panel */}
+      {showSavePanel && (
+        <div className="save-set-modal">
+          <div className="save-set-content">
+            <h4>Save Current Flashcards</h4>
+            <input
+              type="text"
+              placeholder="Enter set name"
+              value={saveSetName}
+              onChange={e => setSaveSetName(e.target.value)}
+              style={{padding:'6px', borderRadius:'4px', border:'1px solid #333', marginBottom:'10px'}}
+            />
+            <br />
+            <button onClick={handleSaveSet} disabled={!saveSetName.trim() || cards.length === 0}>Save</button>
+            <button onClick={() => setShowSavePanel(false)} style={{marginLeft:8}}>Cancel</button>
+          </div>
+        </div>
+      )}
       {cards.length === 0 ? (
         <>
           <textarea
@@ -173,6 +265,92 @@ function App() {
           <br />
           <button onClick={handleParse}>Parse Quiz</button>
         </>
+      ) : selectingAnswers ? (
+        // Improved: Per-question answer selection UI
+        <div className="select-answers-step improved">
+          <h2>Select the correct answer</h2>
+          <div className="select-progress-bar">
+            {cards.map((_, idx) => (
+              <button
+                key={idx}
+                className={`select-progress-dot${idx === answerSelectIndex ? " active" : ""}${answerSelections[idx] !== null ? " answered" : ""}`}
+                onClick={() => setAnswerSelectIndex(idx)}
+                aria-label={`Go to question ${idx + 1}`}
+              >
+                {idx + 1}
+              </button>
+            ))}
+          </div>
+          <div className="select-answer-card improved">
+            <div className="select-question">
+              <b>Q{answerSelectIndex + 1}:</b> {cards[answerSelectIndex].question}
+            </div>
+            <ul className="select-choices improved">
+              {cards[answerSelectIndex].choices.map((choice, cidx) => (
+                <li
+                  key={cidx}
+                  className={`select-choice-item${answerSelections[answerSelectIndex] === cidx ? " selected" : ""}`}
+                  onClick={() => {
+                    const newSelections = [...answerSelections];
+                    newSelections[answerSelectIndex] = cidx;
+                    setAnswerSelections(newSelections);
+                  }}
+                  tabIndex={0}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      const newSelections = [...answerSelections];
+                      newSelections[answerSelectIndex] = cidx;
+                      setAnswerSelections(newSelections);
+                    }
+                  }}
+                  aria-label={`Select answer: ${choice}`}
+                >
+                  <input
+                    type="radio"
+                    name={`answer-${answerSelectIndex}`}
+                    checked={answerSelections[answerSelectIndex] === cidx}
+                    readOnly
+                  />
+                  <span className="choice-text">{choice}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="select-nav-buttons">
+              <button
+                onClick={() => setAnswerSelectIndex(i => Math.max(0, i - 1))}
+                disabled={answerSelectIndex === 0}
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => setAnswerSelectIndex(i => Math.min(cards.length - 1, i + 1))}
+                disabled={answerSelectIndex === cards.length - 1}
+              >
+                Next
+              </button>
+            </div>
+            <div className="select-confirm-bar">
+              <button
+                className="confirm-btn"
+                onClick={handleConfirmAnswers}
+                disabled={answerSelections.some(sel => sel === null)}
+              >
+                Confirm Answers & Start Flashcards
+              </button>
+              <button
+                onClick={() => {
+                  setCards([]);
+                  setInputText("");
+                  setSelectingAnswers(false);
+                  setAnswerSelections([]);
+                }}
+                style={{ marginLeft: 10 }}
+              >
+                Start Over
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
         <>
           <div className="flashcard-header">
@@ -219,6 +397,13 @@ function App() {
               setKeyboardHintShown(false);
             }}>
               Start Over
+            </button>
+            <button
+              onClick={() => setShowSavePanel(true)}
+              style={{marginLeft:10}}
+              disabled={cards.length === 0}
+            >
+              Save Set
             </button>
           </div>
         </>
